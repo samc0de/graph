@@ -1,4 +1,5 @@
 """Graph implementation."""
+# TODO: Investigate numpy arrays.
 
 from ipdb import set_trace
 
@@ -14,6 +15,8 @@ class Node(object):
   __str__ = __repr__
 
 
+# TODO: Support weights.
+# TODO: Support directed edges.
 class Edge(tuple):
   def __new__(cls, node_1, node_2):
     return tuple.__new__(cls, (node_1, node_2))
@@ -31,11 +34,8 @@ class Graph(dict):
       raise ValueError('Edges can not be added without nodes!')
 
     # self.nodes = nodes or []
-    nodes = nodes or []
-    edges = edges or []
-
-    map(self.add_node, nodes)
-    map(self.add_edge, edges)
+    map(self.add_node, nodes or [])
+    map(self.add_edge, edges or [])
 
   def add_node(self, node):
     self[node] = {}
@@ -49,6 +49,10 @@ class Graph(dict):
     except KeyError as e:
       print 'Edges must have their endpoint nodes in the Graph!'
       raise e
+
+  def get_shortest_path(self, node_1, node_2):
+    """Gets shortest paths between given two nodes."""
+    raise NotImplementedError()
 
 
 if __name__ == '__main__':
