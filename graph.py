@@ -1,6 +1,8 @@
 """Graph implementation."""
 # TODO: Investigate numpy arrays.
 
+import itertools
+import logging
 from ipdb import set_trace
 
 
@@ -40,20 +42,57 @@ class Graph(dict):
   def add_node(self, node):
     self[node] = {}
 
-  def add_edge(self, edge):
+  def add_edge(self, edge=None, node_1=None, node_2=None):
     """Adds a bidirectional edge to the Graph."""
-    node_1, node_2 = edge
+    # Validate args here.
+    if not node_1 or node_2:
+      node_1, node_2 = edge
+
     try:
       self[node_1][node_2] = edge
       self[node_2][node_1] = edge
     except KeyError as e:
-      print 'Edges must have their endpoint nodes in the Graph!'
+      logging.error('Edges must have their endpoint nodes in the Graph!')
       raise e
 
   def get_shortest_path(self, node_1, node_2):
     """Gets shortest paths between given two nodes."""
     raise NotImplementedError()
 
+  def get_edge(self, node_1=None, node_2=None, edge=None):
+    # Validate args here.
+    if not node_1 or node_2:
+      node_1, node_2 = edge
+
+    try:
+      return self[node_1][node_2]
+    except KeyError as e:
+      logging.error('No such edge in this graph.')
+
+  def remove_edge(self, edge):
+    node_1, node_2 = edge
+    edge_in_graph = self.get_edge(node_1, node_2)
+    if edge_in_graph:
+      logging.warn('Removing edge %s', edge)
+      self[node_1].pop(node_2)
+    # Or simply for all 4 lines:
+    # self[node_1].pop(node_2, None)
+
+  @property
+  def nodes(self):
+    return self.keys()
+
+  @property
+  def edges(self):
+    edges = set()
+    for node_1, dest in self.iteritems():
+      edges.update(dest.values())
+
+    return edges
+
+  def complete_graph(self):
+    for node_1, node_2 in itertools.combinations(self.nodes, 2):
+      self.add_edge(Edge((node_1, node_2)))
 
 if __name__ == '__main__':
   set_trace()
