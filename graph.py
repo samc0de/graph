@@ -3,8 +3,11 @@
 
 import itertools
 import logging
-from ipdb import set_trace
 
+try:
+  from ipdb import set_trace
+except ImportError:
+  from pdb import set_trace
 
 class Node(object):
   """Represents a node of a graph."""
